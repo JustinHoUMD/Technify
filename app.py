@@ -6,13 +6,13 @@ import werkzeug
 import datetime
 import uuid
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 ALLOWED_IMAGE_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 def process_image(img):
   #open up the mask
-  mask = Image.open('mask.png')
+  mask = Image.open('taiwanflagoverlay.png')
   mask = mask.convert('RGBA')
   #make sure it matches the size of the image
   mask = mask.resize(img.size)
@@ -57,11 +57,15 @@ def process_image(img):
   #send it back
   return filename
 
+@app.route('/templates')
+def static_file(path):
+    return app.send_static_file(path)
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/technify', methods=['POST'])
+@app.route('/taiwanify', methods=['POST'])
 def classify_upload():
   try:
     #get the image from the request
